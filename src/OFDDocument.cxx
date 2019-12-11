@@ -111,7 +111,9 @@ bool OFDDocument::parseXML(const std::string &content){
             const XMLElement *documentResElement = commonDataElement->FirstChildElement("ofd:DocumentRes");
             const XMLElement *maxUnitIDElement = commonDataElement->FirstChildElement("ofd:MaxUnitID");
 
+            if (publicResElement != NULL)
             this->m_attributes.CommonData.publicRes = publicResElement->GetText();
+
             this->m_attributes.CommonData.documentRes = documentResElement->GetText();
             this->m_attributes.CommonData.maxUnitID = atol(maxUnitIDElement->GetText());
 

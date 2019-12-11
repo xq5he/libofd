@@ -132,27 +132,32 @@ bool OFDPage::parseXML(const std::string &content) {
             OFDTextObject* textObject = new OFDTextObject();
 
             textObject->ID = textObjectElement->IntAttribute("ID");
-
             // CTM attribute.
-            std::string c = textObjectElement->Attribute("CTM"); 
-            std::vector<std::string> ctmTokens = SpliteString(c);
-            if ( ctmTokens.size() == 6 ){
-                textObject->CTM.a = atof(ctmTokens[0].c_str());
-                textObject->CTM.b = atof(ctmTokens[1].c_str());
-                textObject->CTM.c = atof(ctmTokens[2].c_str());
-                textObject->CTM.d = atof(ctmTokens[3].c_str());
-                textObject->CTM.p = atof(ctmTokens[4].c_str());
-                textObject->CTM.q = atof(ctmTokens[5].c_str());
+            const char * _c = textObjectElement->Attribute("CTM");
+            if(_c){
+                std::string c = std::string(_c);
+                std::vector<std::string> ctmTokens = SpliteString(c);
+                if ( ctmTokens.size() == 6 ){
+                    textObject->CTM.a = atof(ctmTokens[0].c_str());
+                    textObject->CTM.b = atof(ctmTokens[1].c_str());
+                    textObject->CTM.c = atof(ctmTokens[2].c_str());
+                    textObject->CTM.d = atof(ctmTokens[3].c_str());
+                    textObject->CTM.p = atof(ctmTokens[4].c_str());
+                    textObject->CTM.q = atof(ctmTokens[5].c_str());
+                }
             }
 
             // Boundary attribute.
-            std::string b = textObjectElement->Attribute("Boundary");
-            std::vector<std::string> boundaryTokens = SpliteString(b);
-            if ( boundaryTokens.size() == 4 ){
-                textObject->Boundary.x0 = atof(boundaryTokens[0].c_str());
-                textObject->Boundary.y0 = atof(boundaryTokens[1].c_str());
-                textObject->Boundary.w = atof(boundaryTokens[2].c_str());
-                textObject->Boundary.h = atof(boundaryTokens[3].c_str());
+            const char * _b =  textObjectElement->Attribute("Boundary");
+            if(_b){
+                std::string b = std::string(_b);
+                std::vector<std::string> boundaryTokens = SpliteString(b);
+                if ( boundaryTokens.size() == 4 ){
+                    textObject->Boundary.x0 = atof(boundaryTokens[0].c_str());
+                    textObject->Boundary.y0 = atof(boundaryTokens[1].c_str());
+                    textObject->Boundary.w = atof(boundaryTokens[2].c_str());
+                    textObject->Boundary.h = atof(boundaryTokens[3].c_str());
+                }
             }
 
             // LineWidth attribute.
@@ -175,22 +180,28 @@ bool OFDPage::parseXML(const std::string &content) {
 
             // <ofd:FillColor>
             const XMLElement *fillColorElement = textObjectElement->FirstChildElement("ofd:FillColor");
-            textObject->FillColor.ColorSpace = fillColorElement->IntAttribute("ColorSpace");
-            textObject->FillColor.Value = fillColorElement->DoubleAttribute("Value");
+            if(fillColorElement){
+                textObject->FillColor.ColorSpace = fillColorElement->IntAttribute("ColorSpace");
+                textObject->FillColor.Value = fillColorElement->DoubleAttribute("Value");
+            }
 
             // <ofd:StrokeColor>
             const XMLElement *strokeColorElement = textObjectElement->FirstChildElement("ofd:StrokeColor");
-            textObject->StrokeColor.ColorSpace = strokeColorElement->IntAttribute("ColorSpace");
-            textObject->StrokeColor.Value = strokeColorElement->DoubleAttribute("Value");
+            if(strokeColorElement){
+                textObject->StrokeColor.ColorSpace = strokeColorElement->IntAttribute("ColorSpace");
+                textObject->StrokeColor.Value = strokeColorElement->DoubleAttribute("Value");
+            }
 
             // <ofd:TextCode>
             const XMLElement *textCodeElement = textObjectElement->FirstChildElement("ofd:TextCode");
-            textObject->X = textCodeElement->DoubleAttribute("X");
-            textObject->Y = textCodeElement->DoubleAttribute("Y");
-            textObject->Text = textCodeElement->GetText();
+            if(textCodeElement){
+                textObject->X = textCodeElement->DoubleAttribute("X");
+                textObject->Y = textCodeElement->DoubleAttribute("Y");
+                textObject->Text = textCodeElement->GetText();
+            }
 
             m_ofdObjects.push_back(textObject);
-            m_text += textObject->Text;
+            m_text += textObject->Text + "\n";
 
             if ( VLOG_IS_ON(5) ){
                 VLOG(5) << textObject->ToString();

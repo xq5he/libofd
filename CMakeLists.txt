@@ -4,6 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
 
 INCLUDE_DIRECTORIES(
     ./include
+    /usr/local/include/
 )
 
 LINK_DIRECTORIES(
