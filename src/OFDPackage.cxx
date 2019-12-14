@@ -8,6 +8,7 @@ using namespace tinyxml2;
 
 
 using namespace ofd;
+using namespace std;
 
 OFDPackage::OFDPackage() : m_ofdDocument(NULL), m_zip(NULL){
 
@@ -20,16 +21,32 @@ OFDPackage::~OFDPackage(){
 }
 
 bool OFDPackage::Open(const std::string& filename){
-    if ( opened )return true;
+    if (opened) return true;
 
     this->m_filename = filename;
     int error = 0;
-    m_zip = zip_open(filename.c_str(), 0, &error);
-    if ( m_zip == NULL ){
+    string valid_zip_file = filename + ".zip";
+    ifstream src(filename, std::ios::binary);
+    ofstream dst(valid_zip_file, std::ios::binary);
+    char magic[]{0, 0};
+    while (!src.eof())
+    {
+        src >> magic[0];
+        if (!src.eof()) src >> magic[1];
+        if (magic[0] == 'P' && magic[1] == 'K')
+        {
+            src.seekg(-2, ios::cur);
+            dst << src.rdbuf();
+            break;
+        }
+    }
+    src.close();
+    dst.close();
+    if (!(magic[0] == 'P' && magic[1] == 'K') || (m_zip = zip_open(valid_zip_file.c_str(), 0, &error)) == NULL)
+    {
         LOG(ERROR) << "Error: Open " << filename << " failed. error=" << error;
         return false;
     }
-
     opened = init();
 
     return opened;
