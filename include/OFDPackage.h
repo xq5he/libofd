@@ -52,7 +52,7 @@ private:
     std::string m_filename;
     Attributes m_attributes;
 
-    bool opened;
+    bool opened = false;
     zip *m_zip;
 
     std::map<std::string, size_t> m_files;

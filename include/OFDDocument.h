@@ -72,7 +72,7 @@ class OFDDocument {
 
     Attributes m_attributes;
 
-    bool m_opened;
+    bool m_opened = false;
     std::string m_rootDir;
 
     bool parseXML(const std::string &content);
