@@ -34,14 +34,20 @@ public:
 
 public:
     class OFDCommonData{
+    struct TemplatePage {
+      uint64_t id;
+      std::string baseLoc;
+    };
     public:
         OFDPageArea pageArea;
         std::string publicRes;
         std::string documentRes;
+        TemplatePage templatePage;
         uint64_t maxUnitID;
 
         void clear() {
             memset(&pageArea, 0, sizeof(OFDPageArea));
+            memset(&templatePage, 0, sizeof(TemplatePage));
         }
 
     }; // class OFDCommonData

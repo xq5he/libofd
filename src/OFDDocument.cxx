@@ -65,7 +65,8 @@ std::string OFDDocument::String() const {
         << m_attributes.CommonData.pageArea.physicalBox.y1 << std::endl;
     ss << "PublicRes: " << m_attributes.CommonData.publicRes << std::endl;
     ss << "DocumentRes: " << m_attributes.CommonData.documentRes << std::endl;
-    ss << "MaxUnitID: " << m_attributes.CommonData.maxUnitID; 
+    ss << "MaxUnitID: " << m_attributes.CommonData.maxUnitID << std::endl; 
+    ss << "TemplatePage: " <<  m_attributes.CommonData.templatePage.baseLoc  << std::endl; 
     ss << std::endl
        << "------------------------------" << std::endl;
 
@@ -110,12 +111,18 @@ bool OFDDocument::parseXML(const std::string &content){
             const XMLElement *publicResElement = commonDataElement->FirstChildElement("ofd:PublicRes");
             const XMLElement *documentResElement = commonDataElement->FirstChildElement("ofd:DocumentRes");
             const XMLElement *maxUnitIDElement = commonDataElement->FirstChildElement("ofd:MaxUnitID");
+            const XMLElement *templatePageElement = commonDataElement->FirstChildElement("ofd:TemplatePage");
 
             if (publicResElement != NULL)
             this->m_attributes.CommonData.publicRes = publicResElement->GetText();
 
             this->m_attributes.CommonData.documentRes = documentResElement->GetText();
             this->m_attributes.CommonData.maxUnitID = atol(maxUnitIDElement->GetText());
+            if (templatePageElement != nullptr)
+              this->m_attributes.CommonData.templatePage = {
+                templatePageElement->UnsignedAttribute("ID"),
+                templatePageElement->Attribute("BaseLoc")
+              };
 
         }
 
