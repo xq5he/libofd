@@ -3,42 +3,44 @@
 
 #ifdef __cplusplus
 
-#include <zip.h>
-#include <string>
-#include <vector>
-#include <tuple>
 #include "ofd.h"
+#include <string>
+#include <tuple>
+#include <vector>
+#include <zip.h>
 
 namespace ofd {
 
 class OFDPackage;
 class OFDPage;
 
-
 class OFDDocument {
-public:
+  public:
     OFDDocument(OFDPackage *ofdPackage, const std::string &filename);
     ~OFDDocument();
 
     bool Open();
     void Close();
 
-    OFDPackage *GetOFDPackage(){return m_ofdPackage;};
-    const OFDPackage *GetOFDPackage() const {return m_ofdPackage;};
+    OFDPackage *GetOFDPackage() { return m_ofdPackage; };
+    const OFDPackage *GetOFDPackage() const { return m_ofdPackage; };
 
-    bool IsOpened() const {return m_opened;};
+    bool IsOpened() const { return m_opened; };
 
-    size_t GetPagesCount() const {return m_attributes.Pages.size();};
-    OFDPage *GetOFDPage(size_t idx) {return m_attributes.Pages[idx];};
-    const OFDPage *GetOFDPage(size_t idx) const {return m_attributes.Pages[idx];};
-
-public:
-    class OFDCommonData{
-    struct TemplatePage {
-      uint64_t id;
-      std::string baseLoc;
+    size_t GetPagesCount() const { return m_attributes.Pages.size(); };
+    OFDPage *GetOFDPage(size_t idx) { return m_attributes.Pages[idx]; };
+    const OFDPage *GetOFDPage(size_t idx) const {
+        return m_attributes.Pages[idx];
     };
-    public:
+
+  public:
+    class OFDCommonData {
+        struct TemplatePage {
+            uint64_t id;
+            std::string baseLoc;
+        };
+
+      public:
         OFDPageArea pageArea;
         std::string publicRes;
         std::string documentRes;
@@ -54,17 +56,17 @@ public:
 
     struct Attributes {
         OFDCommonData CommonData;
-        std::vector<OFDPage*> Pages;
+        std::vector<OFDPage *> Pages;
 
         void clear();
     };
 
-    const Attributes& GetAttributes() const {return m_attributes;};
-    Attributes& GetAttributes() {return m_attributes;};
+    const Attributes &GetAttributes() const { return m_attributes; };
+    Attributes &GetAttributes() { return m_attributes; };
 
     std::string String() const;
 
-private:
+  private:
     OFDPackage *m_ofdPackage;
     std::string m_filename;
 
