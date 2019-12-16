@@ -57,13 +57,14 @@ void OFDPage::clear() {
 
 std::string OFDPage::String() const {
     std::stringstream ss;
-    ss << std::endl 
+    ss << std::endl
         << "------------------------------" << std::endl
-        << "OFDPage" << std::endl 
-        << "PhysicalBox: " << m_attributes.PageArea.physicalBox.x0 << ", " 
+        << "OFDPage" << std::endl
+        << "PhysicalBox: " << m_attributes.PageArea.physicalBox.x0 << ", "
         << m_attributes.PageArea.physicalBox.y0 << ", "
         << m_attributes.PageArea.physicalBox.x1 << ", "
-        << m_attributes.PageArea.physicalBox.y1 
+        << m_attributes.PageArea.physicalBox.y1 << std::endl
+        << "Template: " << "ID:" <<m_attributes.PageTemplate.templateId << ", " << "ZOrder: "<< m_attributes.PageTemplate.zOrder
         << std::endl
         << "------------------------------" << std::endl
         ;
@@ -93,6 +94,14 @@ bool OFDPage::parseXML(const std::string &content) {
         //     <ofd:PhysicalBox>
         const XMLElement *physicalBoxElement = areaElement->FirstChildElement("ofd:PhysicalBox");
         if ( physicalBoxElement == NULL ) return false;
+
+        // <odf:Template>
+        const XMLElement *templateElement = rootElement->FirstChildElement("ofd:Template");
+        if ( templateElement != NULL ) {
+            this->m_attributes.PageTemplate.templateId = templateElement -> IntAttribute("TemplateID");
+            this->m_attributes.PageTemplate.zOrder = templateElement -> Attribute("ZOrder");
+        }
+
         double x0, y0, x1, y1;
         bool ok;
         std::tie(x0, y0, x1, y1, ok) = parsePhysicalBoxElement(physicalBoxElement);
@@ -100,7 +109,7 @@ bool OFDPage::parseXML(const std::string &content) {
             this->m_attributes.PageArea.physicalBox.x0 = x0;
             this->m_attributes.PageArea.physicalBox.y0 = y0;
             this->m_attributes.PageArea.physicalBox.x1 = x1;
-            this->m_attributes.PageArea.physicalBox.y1 = y1;  
+            this->m_attributes.PageArea.physicalBox.y1 = y1;
         }
 
         // <ofd:Content>
@@ -117,14 +126,14 @@ bool OFDPage::parseXML(const std::string &content) {
         while ( textObjectElement != NULL ) {
             VLOG_N_TIMES(1, 3) << GetChildElements(textObjectElement);
 
-            //<ofd:TextObject ID="121" CTM="0.3527 0 0 0.3527 -114.807533 111.352325" 
-            //                Boundary="114.807533 185.229584 4.083549 4.733795" 
-            //                LineWidth="1" MiterLimit="3.527" Font="16" Size="14.749" 
+            //<ofd:TextObject ID="121" CTM="0.3527 0 0 0.3527 -114.807533 111.352325"
+            //                Boundary="114.807533 185.229584 4.083549 4.733795"
+            //                LineWidth="1" MiterLimit="3.527" Font="16" Size="14.749"
             //                Stroke="false" Fill="true">
                 //<ofd:FillColor ColorSpace="15" Value="0"/>
                 //<ofd:StrokeColor ColorSpace="15" Value="0"/>
                 //<ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
-                    //<ofd:Glyphs>4460</ofd:Glyphs> 
+                    //<ofd:Glyphs>4460</ofd:Glyphs>
                 //</ofd:CGTransform>
                 //<ofd:TextCode X="324.419" Y="-303.723">局</ofd:TextCode>
             //</ofd:TextObject>

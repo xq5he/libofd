@@ -24,24 +24,40 @@ int main(int argc, char *argv[]){
         LOG(DEBUG) << ofdDocument->String();
 
         size_t n_pages = ofdDocument->GetPagesCount();
+        ofd::OFDDocument::Attributes docAttrs = ofdDocument->GetAttributes();
         LOG(INFO) << "Loading " << n_pages << " pages.";
 
         for ( size_t i = 0 ; i < n_pages ; i++ ){
 
             OFDPage *ofdPage = ofdDocument->GetOFDPage(i);
-            ofdPage->Open();
+            if (!ofdPage->Open()){
+              LOG(ERROR) << "Page open failed";
+            }
 
             VLOG(3) << ofdPage->String(); 
             LOG(INFO) << ofdPage->GetText();
+
+            ofd::OFDPage::Attributes m_attributes = ofdPage->GetAttributes();
+              int templateId = m_attributes.PageTemplate.templateId;
+              OFDPage *pageTemplate = nullptr;
+              for(OFDPage *templ : docAttrs.CommonData.Templates){
+                if (templ->GetID() == templateId)
+                {
+                  pageTemplate = templ;
+                  break;
+                }
+              }
+              if(pageTemplate == nullptr){
+                LOG(ERROR) << "Template " << templateId << "not found.";
+              }
 
             std::stringstream ss;
             ss << "Page" << (i + 1) << ".png";
             std::string png_filename = ss.str();
             ofdPage->RenderToPNGFile(png_filename);
-
             ofdPage->Close();
         }
-
+        ofdDocument->Close();
         ofdPackage.Close();
     }
 

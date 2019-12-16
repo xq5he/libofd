@@ -49,9 +49,8 @@ void OFDDocument::Attributes::clear() {
 }
 
 void OFDDocument::Close() {
-    if ( !IsOpened() ) return;
-
     m_attributes.clear();
+    if ( !IsOpened() ) return;
 }
 
 std::string OFDDocument::String() const {
@@ -119,10 +118,19 @@ bool OFDDocument::parseXML(const std::string &content){
             this->m_attributes.CommonData.documentRes = documentResElement->GetText();
             this->m_attributes.CommonData.maxUnitID = atol(maxUnitIDElement->GetText());
             if (templatePageElement != nullptr)
+            {
               this->m_attributes.CommonData.templatePage = {
                 templatePageElement->UnsignedAttribute("ID"),
                 templatePageElement->Attribute("BaseLoc")
               };
+
+               OFDPage *templatePage = new OFDPage(
+                   this,
+                   this->m_attributes.CommonData.templatePage.id,
+                   this->m_attributes.CommonData.templatePage.baseLoc
+               );
+               this->m_attributes.CommonData.Templates.push_back(templatePage);
+            }
 
         }
 

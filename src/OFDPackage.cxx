@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include<stdio.h>
+#include <cstdio>
 #include "OFDPackage.h"
 #include "OFDDocument.h"
 #include "utils.h"
@@ -63,14 +66,13 @@ bool OFDPackage::init() {
 }
 
 void OFDPackage::Close(){
-    if (!opened) return;
-
     if ( m_ofdDocument != NULL ){
         delete m_ofdDocument;
         m_ofdDocument = NULL;
     }
 
     zip_close(m_zip);
+    remove((this->m_filename + ".zip").c_str());
     m_zip = NULL;
 
     opened = false;

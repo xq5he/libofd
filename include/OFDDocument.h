@@ -46,6 +46,7 @@ class OFDDocument {
         std::string documentRes;
         TemplatePage templatePage;
         uint64_t maxUnitID;
+        std::vector<OFDPage *> Templates;
 
         void clear() {
             memset(&pageArea, 0, sizeof(OFDPageArea));
